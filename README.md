@@ -2,8 +2,6 @@
 
 A task managing app
 
----
-
 ## Description
 
 A to-dos application in which the user can
@@ -11,8 +9,6 @@ A to-dos application in which the user can
 - Create / Remove task
 - Mark task complete
 - Create / Remove list (Folder concept)
-
----
 
 ## Updates
 
@@ -22,9 +18,7 @@ A to-dos application in which the user can
 - frontend styles setup
 - mongodb setup with list/task models
 
----
-
-### Stack
+## Stack
 
 - MongoDB
 - Node/Express
