@@ -11,14 +11,7 @@ const { List, Task } = require("./db/models");
 // Load middleware
 app.use(bodyParser.json());
 
-// Route Handling
-
-// List Routes
-
-/*
-    Get /lists
-    Purpose: get all lists
-*/
+// --------- LISTS ----------------------------
 app.get("/lists", (req, res) => {
   // want to return array of all the lists in the database
   List.find()
@@ -30,10 +23,6 @@ app.get("/lists", (req, res) => {
     });
 });
 
-/*
-    POST /lists
-    Purpose: Create a list
-*/
 app.post("/lists", (req, res) => {
   // want to create new list and return new list doc to user (including id)
   // the list information (fieleds) will be passed in via JSON req body
@@ -47,10 +36,6 @@ app.post("/lists", (req, res) => {
   });
 });
 
-/*
-    PATCH /lists/:id
-    Purpose: Update a specified list
-*/
 app.patch("/lists/:id", (req, res) => {
   // We want to update the specified list (list doc with id in the URL) with new values specified in the JSON body of the request
   List.findOneAndUpdate(
@@ -63,16 +48,62 @@ app.patch("/lists/:id", (req, res) => {
   });
 });
 
-/*
-    DELETE /lists/:id
-    Purpose: Delete a list
-*/
 app.delete("/lists/:id", (req, res) => {
   // We want to delete the specified list (document with id in the URL)
   List.findOneAndRemove({
     _id: req.params.id,
   }).then((removedListDoc) => {
     res.send(removedListDoc);
+  });
+});
+
+// -----------------------TASKS -------------------------
+app.get("/lists/:listId/tasks", (req, res) => {
+  // Return all tasks that belong to a specific list
+  Task.find({
+    _listId: req.params.listId,
+  }).then((tasks) => {
+    res.send(tasks);
+  });
+});
+
+app.get("/lists/:listId/tasks/:taskId", (req, res) => {
+  Task.find({
+    _id: req.params.taskId,
+    _listId: req.params.listId,
+  }).then((task) => {
+    res.send(task);
+  });
+});
+
+app.post("/lists/:listId/tasks", (req, res) => {
+  // We want to create a new task in the list specified by listId
+  let newTask = new Task({
+    title: req.body.title,
+    _listId: req.params.listId,
+  });
+  newTask.save().then((newTaskDoc) => {
+    res.send(newTaskDoc);
+  });
+});
+
+app.patch("/lists/:listId/tasks/:taskId", (req, res) => {
+  Task.findOneAndUpdate(
+    { _id: req.params.taskId, _listId: req.params.listId },
+    {
+      $set: req.body,
+    }
+  ).then(() => {
+    res.sendStatus(200);
+  });
+});
+
+app.delete("/lists/:listId/tasks/:taskId", (req, res) => {
+  Task.findOneAndRemove({
+    _id: req.params.taskId,
+    _listId: req.params.listId,
+  }).then((removedTaskDoc) => {
+    res.send(removedTaskDoc);
   });
 });
 
