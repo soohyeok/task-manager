@@ -11,6 +11,16 @@ const { List, Task } = require("./db/models");
 // Load middleware
 app.use(bodyParser.json());
 
+// CORS HEADER MIDDLEWARE
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 // --------- LISTS ----------------------------
 app.get("/lists", (req, res) => {
   // want to return array of all the lists in the database
