@@ -18,6 +18,12 @@ A to-dos application in which the user can
 - frontend styles setup
 - mongodb setup with list/task models
 
+###### 04_08_21
+
+- api and frontend connected through httpreq:webreq
+- able to post new list from frontend
+- frontend navigation routing list creation process
+
 ## Stack
 
 - MongoDB
