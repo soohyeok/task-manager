@@ -10,6 +10,20 @@ A to-dos application in which the user can
 - Mark task complete
 - Create / Remove list (Folder concept)
 
+## How to Install/Run:
+
+- download repo
+  how to run api
+- ~task-manager/api/ $npm i
+- npm start
+
+how to run frontend
+
+- ~task-manager/frontend/ $npm i
+- npm start
+
+Access Task Manager at http://localhost:4200/
+
 ## Update Log
 
 ##### 04_13_21
