@@ -28,8 +28,8 @@ Access Task Manager at http://localhost:4200/
 
 ##### 04_13_21
 
-- new List creation routing
-- new Task creation routing
+- new List creation / routing
+- new Task creation / routing
 - task completion
 
 ##### 04_12_21
