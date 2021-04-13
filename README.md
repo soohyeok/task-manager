@@ -13,7 +13,9 @@ A to-dos application in which the user can
 ## How to Install/Run:
 
 - download repo
-  how to run api
+
+how to run api
+
 - ~task-manager/api/ $npm i
 - npm start
 
