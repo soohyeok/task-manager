@@ -25,7 +25,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-// --------- LISTS ----------------------------
+/* ---------------------------------------
+------------ LIST ROUTES ------------
+----------------------------------------- */
+
 app.get("/lists", (req, res) => {
   // want to return array of all the lists in the database
   List.find()
@@ -71,7 +74,10 @@ app.delete("/lists/:id", (req, res) => {
   });
 });
 
-// -----------------------TASKS -------------------------
+/* ---------------------------------------
+------------ TASK ROUTES ------------
+----------------------------------------- */
+
 app.get("/lists/:listId/tasks", (req, res) => {
   // Return all tasks that belong to a specific list
   Task.find({
@@ -120,6 +126,10 @@ app.delete("/lists/:listId/tasks/:taskId", (req, res) => {
     res.send(removedTaskDoc);
   });
 });
+
+/* ---------------------------------------
+------------ USER ROUTES ------------
+----------------------------------------- */
 
 app.listen(3000, () => {
   console.log("Server is listening on port 3000");
