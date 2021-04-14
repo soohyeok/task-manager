@@ -28,6 +28,13 @@ Access Task Manager at http://localhost:4200/
 
 ## Update Log
 
+##### 04_14_21
+
+- task completion to switch (complete -> incomplete -> complete)
+- user model created
+- user methods created (instance, model, helper methods + middleware)
+- added on jwt, bcrypt
+
 ##### 04_13_21
 
 - new List creation / routing
