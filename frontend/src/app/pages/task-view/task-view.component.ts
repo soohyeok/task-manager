@@ -34,7 +34,7 @@ export class TaskViewComponent implements OnInit {
     this.taskService.complete(task).subscribe(() => {
       console.log('Completed Successfully');
 
-      task.completed = true;
+      task.completed = !task.completed;
     });
   }
 }
