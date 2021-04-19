@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const _ = require("lodash");
-const jtw = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 
@@ -24,7 +24,6 @@ const UserSchema = new mongoose.Schema({
     {
       token: {
         type: String,
-
         required: true,
       },
       expiresAt: {
@@ -51,7 +50,7 @@ UserSchema.methods.generateAccessAuthToken = function () {
   const user = this;
   return new Promise((resolve, reject) => {
     //Create JWT
-    jtw.sign(
+    jwt.sign(
       { _id: user._id.toHexString() },
       jwtSecret,
       { expiresIn: "15m" },
@@ -59,7 +58,7 @@ UserSchema.methods.generateAccessAuthToken = function () {
         if (!err) {
           resolve(token);
         } else {
-          reject(err);
+          reject();
         }
       }
     );
@@ -71,7 +70,6 @@ UserSchema.methods.generateRefreshAuthToken = function () {
     crypto.randomBytes(64, (err, buffer) => {
       if (!err) {
         let token = buffer.toString("hex");
-
         return resolve(token);
       }
     });
@@ -164,7 +162,6 @@ UserSchema.pre("save", function (next) {
 let saveSessionToDatabase = (user, refreshToken) => {
   return new Promise((resolve, reject) => {
     let expiresAt = generateRefreshTokenExpiryTime();
-
     user.sessions.push({ token: refreshToken, expiresAt });
     user
       .save()

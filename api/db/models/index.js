@@ -5,4 +5,5 @@ const { User } = require("./user.model");
 module.exports = {
   List,
   Task,
+  User,
 };

@@ -143,7 +143,7 @@ app.post("/users", (req, res) => {
         return { accessToken, refreshToken };
       });
     })
-    .then((authToken) => {
+    .then((authTokens) => {
       res
         .header("x-refresh-token", authTokens.refreshToken)
         .header("x-access-token", authTokens.accessToken)
