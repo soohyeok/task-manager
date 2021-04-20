@@ -8,12 +8,15 @@ const bodyParser = require("body-parser");
 // Load in the mongoose models
 const { List, Task, User } = require("./db/models");
 
+/* MIDDLEWARE */
+
 // Load middleware
 app.use(bodyParser.json());
 
 // CORS HEADER MIDDLEWARE
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Methods",
     "GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE"
@@ -24,6 +27,55 @@ app.use(function (req, res, next) {
   );
   next();
 });
+
+// Verify refresh token middleware (verifies the session)
+let verifySession = (req, res, next) => {
+  // grab refresh token from req header
+  let refreshToken = req.header("x-refresh-token");
+  // grab _id from the req header
+  let _id = req.header("_id");
+
+  User.findByIdAndToken(_id, refreshToken)
+    .then((user) => {
+      if (!user) {
+        //user not found
+        return Promise.reject({
+          error:
+            "User not found. Make sure that the refresh token and user id are correct",
+        });
+      }
+
+      // user was found; token also found, but still need to check if the token has expired
+      req.user_id = user._id;
+      req.userObject = user;
+      req.refreshToken = refreshToken;
+
+      let isSessionValid = false;
+
+      user.sessions.forEach((session) => {
+        if (session.token === refreshToken) {
+          //check if session expired
+          if (User.hasRefreshTokenExpired(session.expiresAt) === false) {
+            // refresh token not expired
+            isSessionValid = true;
+          }
+        }
+      });
+
+      if (isSessionValid) {
+        // session is valid call next to continue with webreq process
+        next();
+      } else {
+        // session invalid
+        return Promise.reject({
+          error: "Refresh Token has expired or the session is invalid",
+        });
+      }
+    })
+    .catch((e) => {
+      res.status(401).send(e);
+    });
+};
 
 /* ---------------------------------------
 ------------ LIST ROUTES ------------
@@ -177,12 +229,27 @@ app.post("/users/login", (req, res) => {
         res
           .header("x-refresh-token", authTokens.refreshToken)
           .header("x-access-token", authTokens.accessToken)
-          .send(newUser);
+          .send(user);
       })
       .catch((e) => {
         res.status(400).send(e);
       });
   });
+});
+
+// generates and returns an access token
+// need to create middleware (verifySession) to verify caller of this route is auth'ed to access this route
+// check header to see refresh token is valid
+app.get("/users/me/access-token", verifySession, (req, res) => {
+  // user is auth'ed and have user id, user obj avail
+  req.userObject
+    .generateAccessAuthToken()
+    .then((accessToken) => {
+      res.header("x-access-token", accessToken).send({ accessToken });
+    })
+    .catch((e) => {
+      res.status(400).send(e);
+    });
 });
 
 app.listen(3000, () => {
