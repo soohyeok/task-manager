@@ -96,13 +96,17 @@ UserSchema.methods.createSession = function () {
 ---- MODEL METHODS (static methods) --------
 ----------------------------------------- */
 
+UserSchema.statics.getJWTSecret = () => {
+  return jwtSecret;
+};
+
 UserSchema.statics.findByIdAndToken = function (_id, token) {
   // find user by Id and Token, used in auth middleware(verifysession)
   const User = this;
 
   return User.findOne({
     _id,
-    "session.token": token,
+    "sessions.token": token,
   });
 };
 
@@ -113,8 +117,9 @@ UserSchema.statics.findByCredentials = function (email, password) {
 
     return new Promise((resolve, reject) => {
       bcrypt.compare(password, user.password, (err, res) => {
-        if (res) resolve(user);
-        else {
+        if (res) {
+          resolve(user);
+        } else {
           reject();
         }
       });
@@ -144,7 +149,7 @@ UserSchema.pre("save", function (next) {
     // if the pwd field has been edited/changed then run this code
 
     // generate salt and hash pwd
-    bcrypt.genSalt(costFator, (err, salt) => {
+    bcrypt.genSalt(costFactor, (err, salt) => {
       bcrypt.hash(user.password, salt, (err, hash) => {
         user.password = hash;
         next();

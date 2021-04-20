@@ -130,6 +130,8 @@ app.delete("/lists/:listId/tasks/:taskId", (req, res) => {
 /* ---------------------------------------
 ------------ USER ROUTES ------------
 ----------------------------------------- */
+
+//Signup
 app.post("/users", (req, res) => {
   let body = req.body;
   let newUser = new User(body);
@@ -139,6 +141,8 @@ app.post("/users", (req, res) => {
       return newUser.createSession();
     })
     .then((refreshToken) => {
+      //Session created successfully - refreshToken returned.
+      // now generate access auth token for user
       return newUser.generateAccessAuthToken().then((accessToken) => {
         return { accessToken, refreshToken };
       });
